@@ -16,20 +16,20 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
-private EditText editLogin;
-private EditText editSenha;
-private FirebaseAuth firebaseAuth;
+
+    private EditText username, password, password2;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.login);
 
-        editLogin = findViewById(R.id.editLogin);
-        editSenha = findViewById(R.id.editSenha);
+        username = findViewById(R.id.username);
+        password = findViewById(R.id.password);
 
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
 
     }
@@ -38,30 +38,29 @@ private FirebaseAuth firebaseAuth;
     protected void onStart() {
 
         super.onStart();
-        FirebaseUser user = firebaseAuth.getCurrentUser();
+        FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
 
             Toast.makeText(this, "Logado", Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
 
             Toast.makeText(this, "Usuario nao Logado", Toast.LENGTH_SHORT).show();
-    }
+        }
 
 
     }
-
 
 
     public void sigIN(View view) {
 
-        String login= editLogin.getText().toString();
-        String senha = editSenha.getText().toString();
-        firebaseAuth.signInWithEmailAndPassword(login, senha).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+        String login = username.getText().toString();
+        String senha = password.getText().toString();
+        mAuth.signInWithEmailAndPassword(login, senha).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
                 Toast.makeText(MainActivity.this, "Sucesso", Toast.LENGTH_LONG).show();
 
-                Intent intent = new Intent (MainActivity.this, Main2Activity.class);
+                Intent intent = new Intent(MainActivity.this, Telalogado.class);
                 startActivity(intent);
 
             }
@@ -73,29 +72,35 @@ private FirebaseAuth firebaseAuth;
                         Toast.makeText(MainActivity.this, "Erro ao logar", Toast.LENGTH_SHORT).show();
                     }
                 });
-        }
-
-    public void Cadastro(View view) {
-
-        String login= editLogin.getText().toString();
-        String senha = editSenha.getText().toString();
-
-        firebaseAuth.createUserWithEmailAndPassword(login, senha).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-            @Override
-            public void onSuccess(AuthResult authResult) {
-                Toast.makeText(MainActivity.this, "Cadastrado com sucesso!", Toast.LENGTH_LONG).show();
-
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this, "Erro ao cadastrar", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-
     }
 
+    public void register(View view) {
+        String login = username.getText().toString();
+        String senha = password.getText().toString();
+        String confirmaSenha = password2.getText().toString();
+        if (senha.length() >= 8) {
+            mAuth.createUserWithEmailAndPassword(login, senha).addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
+                @Override
+                public void onSuccess(AuthResult authResult) {
+                    telalogado();
+                }
+            }).addOnFailureListener(this, new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(MainActivity.this, "Erro ao logar", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } else {
+            Toast.makeText(this, "A senha precisa ter no mínimo 8 caracteres", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void telalogado() {
+        Intent logado = new Intent(this, Telalogado.class);
+        startActivity(logado);
+    }
 }
+
+
+

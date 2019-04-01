@@ -16,14 +16,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 
-public class MainActivity3 extends AppCompatActivity {
+public class Resultados extends AppCompatActivity {
 
     private TextView textJSON;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.login);
 
     }
 
@@ -40,7 +40,7 @@ public class MainActivity3 extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Filmes filme = gson.fromJson(response,Filmes.class);
+                        Filme filme = gson.fromJson(response, Filme.class);
                         textJSON.setText(filme.toString());
                     }
                 },
